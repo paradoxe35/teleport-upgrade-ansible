@@ -1,0 +1,1 @@
+# Teleport auto update playbook
