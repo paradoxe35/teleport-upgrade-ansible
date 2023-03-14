@@ -1,3 +1,14 @@
-- hosts: servers
+---
+- name: update teleport
+  hosts: servers
+  become: yes
+
+  pre_tasks:
+    - name: "APT | Update & Upgrade"
+      become: yes
+      apt:
+        upgrade: yes
+        update_cache: yes
+
   roles:
     - teleport
