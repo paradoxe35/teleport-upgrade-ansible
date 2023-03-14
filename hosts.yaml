@@ -1,0 +1,37 @@
+servers:
+  hosts:
+    teleport-server.smatflow.smf:
+      ansible_user: teleport
+
+    code-server.smatflow.smfl:
+      ansible_user: code
+
+    database-server.smatflow.smf:
+      ansible_user: database
+
+    gitlab-runner-server.smatflow.smf:
+      ansible_user: runner
+
+    gitlab-server.smatflow.smf:
+      ansible_user: gitlab
+
+    ipa-server.smatflow.smf:
+      ansible_user: freeipa
+
+    mail-server.smatflow.smf:
+      ansible_user: zimbra
+
+    pihole-server.smatflow.smf:
+      ansible_user: pihole
+
+    portainer-server.smatflow.smf:
+      ansible_user: portainer
+
+    proxymanager-server.smatflow.smf:
+      ansible_user: proxymanager
+
+    taiga-server.smatflow.smf:
+      ansible_user: taiga
+
+    wireguard-server.smatflow.smf:
+      ansible_user: wireguard
