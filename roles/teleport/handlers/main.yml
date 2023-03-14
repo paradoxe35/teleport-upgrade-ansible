@@ -1,7 +1,1 @@
 ---
-- name: Test playbook
-  command: hostname
-  register: output
-
-- debug:
-    var: output.stdout_lines

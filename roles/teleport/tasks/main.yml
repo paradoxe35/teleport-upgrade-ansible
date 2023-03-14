@@ -1,1 +1,65 @@
 ---
+- name: Download Teleport's PGP public key
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ pgp_public_key }}"
+    dest: /usr/share/keyrings/teleport-archive-keyring.asc
+
+- name: Source variables about OS version
+  shell: |
+    source /etc/os-release &&
+    echo "deb [signed-by=/usr/share/keyrings/teleport-archive-keyring.asc] https://apt.releases.teleport.dev/${ID?} ${VERSION_CODENAME?} {{ teleport_version }}"
+  args:
+    executable: /bin/bash
+  register: teleport_repo
+
+- debug:
+    var: teleport_repo.stdout
+
+- name: Add the Teleport APT repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "{{ teleport_repo.stdout }}"
+    filename: teleport.list
+    state: present
+
+- name: Get running processes
+  shell: pidof teleport | tr ' ' '\n'
+  register: old_processes
+
+- name: Update repositories cache and install teleport package
+  become: true
+  ansible.builtin.apt:
+    name: teleport
+    state: latest
+    update_cache: yes
+
+- name: Teleport running processes
+  debug:
+    var: old_processes.stdout_lines
+
+- name: Fork the teleport process
+  become: true
+  shell: "kill -USR2 $(pidof teleport | awk '{print $1}')"
+
+- name: Get Teleport news running processes
+  shell: pidof teleport | tr ' ' '\n'
+  register: new_processes
+
+- name: Teleport news running processes
+  debug:
+    var: new_processes.stdout_lines
+
+- name: Kill Old running processes
+  become: true
+  shell: "kill -QUIT {{ item }}"
+  with_items: "{{ old_processes.stdout_lines }}"
+
+# Debug
+- name: Get Teleport end running processes
+  shell: pidof teleport | tr ' ' '\n'
+  register: end_processes
+
+- name: Teleport end running processes
+  debug:
+    var: end_processes.stdout_lines

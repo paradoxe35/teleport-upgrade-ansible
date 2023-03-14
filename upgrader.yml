@@ -1,7 +1,7 @@
 ---
 - name: update teleport
   hosts: servers
-  become: yes
+  strategy: free
 
   pre_tasks:
     - name: "APT | Update & Upgrade"
