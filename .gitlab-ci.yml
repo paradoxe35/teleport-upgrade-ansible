@@ -1,0 +1,29 @@
+default:
+  tags:
+    - smatflow-projects-runner
+
+stages:
+  - deploy
+
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+deploy:
+  stage: deploy
+  image: python:3.10
+  only:
+    refs:
+      - main
+  cache:
+    key: pip-cache
+    paths:
+      - .cache/pip
+  before_script:
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - bash cicd_vars.sh
+    - make ansible-install-cd
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$ANSIBLE_DEPLOY_KEY")
+  script:
+    - bash deploy.sh
+  when: manual
