@@ -1,9 +1,4 @@
 ---
-
-- name: "Move"
-  become: true
-  shell: "mv /usr/local/bin/teleport.bak /usr/local/bin/teleport"
-
 - name: "systemctl restart teleport"
   become: true
   shell: "systemctl restart teleport"
