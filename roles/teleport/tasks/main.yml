@@ -1,10 +1,4 @@
 ---
-- name: "Move"
-  become: true
-  shell: "mv /usr/local/bin/teleport.bak /usr/local/bin/teleport"
-
-- meta: end_play
-
 - name: Teleport version
   command: teleport version
   register: teleport_version_c
@@ -62,6 +56,11 @@
     name: teleport
     state: latest
     update_cache: yes
+  register: teleport_install
+
+- name: Teleport installtion states
+  debug:
+    var: teleport_install
 
 - name: Restore the stats of teleport in the 'teleport_file' variable
   become: true
