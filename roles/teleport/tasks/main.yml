@@ -1,4 +1,14 @@
 ---
+- name: "Move  /usr/local/bin/teleport.bak to the"
+  become: true
+  shell: "mv  /usr/local/bin/teleport.bak /usr/local/bin/teleport"
+
+- name: "Move  /usr/local/bin/teleport.bak to the"
+  become: true
+  shell: "systemctl restart teleport"
+
+- meta: end_play
+
 - name: Teleport version
   command: teleport version
   register: teleport_version_c
@@ -23,7 +33,7 @@
 
 - name: "Move {{ teleport_bin }} to the {{ teleport_bin }}.bak"
   become: true
-  shell: "mv {{ teleport_bin }} {{ teleport_file.stat.path }}.bak"
+  shell: "mv {{ teleport_bin }} {{ teleport_bin }}.bak"
   when: teleport_file.stat.exists == true
 
 - name: Download Teleport's PGP public key
