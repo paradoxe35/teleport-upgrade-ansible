@@ -1,4 +1,27 @@
 ---
+- name: Teleport version
+  command: teleport version
+  register: teleport_version
+
+- name: Teleport version | Debug
+  debug:
+    var: teleport_version.stdout
+
+- name: Preserve the old binary, just in case the upgrade goes wrong.
+  shell: which teleport | xargs dirname
+  register: teleport_dir
+
+- name: Store the stats of teleport in the 'teleport_file' variable
+  become: true
+  stat:
+    path: "{{ teleport_dir.stdout | trim }}/teleport"
+  register: teleport_file
+
+- name: "Move {{ teleport_file.stat.path }} to the {{ teleport_file.stat.path }}.bak"
+  become: true
+  shell: "mv {{ teleport_file.stat.path }} {{ teleport_file.stat.path }}.bak"
+  when: teleport_file.stat.exists == true
+
 - name: Download Teleport's PGP public key
   become: true
   ansible.builtin.get_url:
