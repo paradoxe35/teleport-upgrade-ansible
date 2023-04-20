@@ -1,10 +1,4 @@
 ---
-- name: "systemctl restart teleport"
-  become: true
-  shell: "systemctl restart teleport"
-
-- meta: end_play
-
 - name: Teleport version
   command: teleport version
   register: teleport_version_c
