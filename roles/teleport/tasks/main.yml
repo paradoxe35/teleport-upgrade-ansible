@@ -68,14 +68,13 @@
     path: "{{ teleport_dir.stdout | trim }}/teleport"
   register: teleport_file
 
-- name: Copy teleport bak {{ teleport_file.stat.path }} to teleport if not exist
+- name: "Copy teleport bak {{ teleport_dir.stdout | trim }}/teleport to teleport if not exist"
   become: true
   ansible.builtin.copy:
-    src: "{{ teleport_file.stat.path }}.bak"
-    dest: "{{ teleport_file.stat.path }}"
+    src: "{{ teleport_dir.stdout | trim }}/teleport.bak"
+    dest: "{{ teleport_dir.stdout | trim }}/teleport"
     remote_src: yes
   when: teleport_file.stat.exists == false
-  ignore_errors: true
 
 - name: Teleport running processes
   debug:
