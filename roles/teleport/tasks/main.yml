@@ -52,7 +52,7 @@
 
 - name: Kill Old running processes
   become: true
-  shell: "kill -QUIT {{ item }}"
+  shell: "kill -QUIT {{ item | trim | int }}"
   with_items: "{{ old_processes.stdout_lines }}"
 
 # Debug
