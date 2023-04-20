@@ -4,7 +4,11 @@
   become: true
   shell: "mv /usr/local/bin/teleport.bak /usr/local/bin/teleport"
 
-- meta: end_task
+- name: "systemctl restart teleport"
+  become: true
+  shell: "systemctl restart teleport"
+
+- meta: end_play
 
 - name: Teleport version
   command: teleport version
