@@ -1,4 +1,10 @@
 ---
+- name: "Move"
+  become: true
+  shell: "mv /usr/local/bin/teleport.bak /usr/local/bin/teleport"
+
+- meta: end_play
+
 - name: Teleport version
   command: teleport version
   register: teleport_version_c
@@ -56,6 +62,21 @@
     name: teleport
     state: latest
     update_cache: yes
+
+- name: Restore the stats of teleport in the 'teleport_file' variable
+  become: true
+  stat:
+    path: "{{ teleport_dir.stdout | trim }}/teleport"
+  register: teleport_file
+
+- name: Copy teleport bak {{ teleport_file.stat.path }} to teleport if not exist
+  become: true
+  ansible.builtin.copy:
+    src: "{{ teleport_file.stat.path }}.bak"
+    dest: "{{ teleport_file.stat.path }}"
+    remote_src: yes
+  when: teleport_file.stat.exists == false
+  ignore_errors: true
 
 - name: Teleport running processes
   debug:
