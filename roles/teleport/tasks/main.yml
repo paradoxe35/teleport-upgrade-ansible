@@ -1,11 +1,11 @@
 ---
 - name: Teleport version
   command: teleport version
-  register: teleport_version
+  register: teleport_version_c
 
 - name: Teleport version | Debug
   debug:
-    var: teleport_version.stdout
+    var: teleport_version_c.stdout
 
 - name: Preserve the old binary, just in case the upgrade goes wrong.
   shell: which teleport | xargs dirname
