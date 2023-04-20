@@ -1,14 +1,4 @@
 ---
-- name: "Move  /usr/local/bin/teleport.bak to the"
-  become: true
-  shell: "mv  /usr/local/bin/teleport.bak /usr/local/bin/teleport"
-
-- name: "Move  /usr/local/bin/teleport.bak to the"
-  become: true
-  shell: "systemctl restart teleport"
-
-- meta: end_play
-
 - name: Teleport version
   command: teleport version
   register: teleport_version_c
