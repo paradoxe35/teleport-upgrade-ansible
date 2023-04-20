@@ -11,15 +11,19 @@
   shell: which teleport | xargs dirname
   register: teleport_dir
 
+- name: Teleport bin path
+  set_fact:
+    teleport_bin: "{{ teleport_dir.stdout | trim }}/teleport"
+
 - name: Store the stats of teleport in the 'teleport_file' variable
   become: true
   stat:
-    path: "{{ teleport_dir.stdout | trim }}/teleport"
+    path: "{{ teleport_bin }}"
   register: teleport_file
 
-- name: "Move {{ teleport_file.stat.path }} to the {{ teleport_file.stat.path }}.bak"
+- name: "Move {{ teleport_bin }} to the {{ teleport_bin }}.bak"
   become: true
-  shell: "mv {{ teleport_file.stat.path }} {{ teleport_file.stat.path }}.bak"
+  shell: "mv {{ teleport_bin }} {{ teleport_file.stat.path }}.bak"
   when: teleport_file.stat.exists == true
 
 - name: Download Teleport's PGP public key
@@ -62,19 +66,16 @@
   debug:
     var: teleport_install
 
-- name: Restore the stats of teleport in the 'teleport_file' variable
+- name: Restore the stats of teleport in the 'teleport_filei' variable
   become: true
   stat:
-    path: "{{ teleport_dir.stdout | trim }}/teleport"
-  register: teleport_file
+    path: "{{ teleport_bin }}"
+  register: teleport_filei
 
-- name: "Copy teleport bak {{ teleport_dir.stdout | trim }}/teleport to teleport if not exist"
+- name: "Copy {{ teleport_bin }}.bak to {{ teleport_bin }}, if no installation made"
   become: true
-  ansible.builtin.copy:
-    src: "{{ teleport_dir.stdout | trim }}/teleport.bak"
-    dest: "{{ teleport_dir.stdout | trim }}/teleport"
-    remote_src: yes
-  when: teleport_file.stat.exists == false
+  shell: "cp {{ teleport_bin }}.bak {{ teleport_bin }}"
+  when: teleport_filei.stat.exists == false
 
 - name: Teleport running processes
   debug:
