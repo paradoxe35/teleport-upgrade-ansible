@@ -6,7 +6,6 @@
     - name: "APT | Update & Upgrade"
       become: yes
       apt:
-        upgrade: yes
         update_cache: yes
 
   roles:
